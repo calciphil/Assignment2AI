@@ -6,75 +6,112 @@ Created on Sat Sep 17 14:14:33 2022
 """
 
 from Map import Map_Obj
-import heapq
+from queue import PriorityQueue
 from typing import TypeVar, Tuple
 import math
+import numpy as np
+import heapq as hq
+import sys
 
 
-themap = Map_Obj(task=1)
+
+
+#print("current = "+ str(themap.current_pos))
+#themapsub = np.array(themap)
+#print(themapsub[12,12])
 # themap.show_map()
-print(themap.goal_pos)
+#print("start = " + str(themap.start_pos))
 def manhattan(a, b):
     return sum(abs(val1-val2) for val1, val2 in zip(a,b))
 
-print(manhattan(themap.get_start_pos(), themap.get_end_goal_pos()))
+def manhattan_distance(point1, point2):
+    distance = 0
+    for x1, x2 in zip(point1, point2):
+        difference = x2 - x1
+        absolute_difference = abs(difference)
+        distance += absolute_difference
+    return distance
 
-Location = TypeVar('Location')
-
-
-heuristic = math.dist(themap.get_start_pos(),themap.get_goal_pos())
-
-
-print(heuristic)
-
-def neighbors(pos : Map_Obj()):
+def neighbors(pos : Map_Obj):
+    values = pos.get_maps()[0] #aims for values of the map a.k.a. 1, -1 to find walls and paths
     validneighbors = []
     current = pos.current_pos
+    print(current)
+    left=current[0]
+    right=current[1]
+    # print("left: "+ str(left))
+    # print("right: "+str(right))
     south = current[0]+1
     north = current[0]-1
     est = current[1]+1  
     ouest = current[1]-1
-    if current[south, current[1]]!=-1:
-        validneighbors.append(current[south,current[1]])
-    if current[north, current[1]]!=-1:
-        validneighbors.append(current[north,current[1]])
-    if current[current[0], est]!=-1:
-        validneighbors.append(current[current[0], est])
-    if current[current[0], ouest]!=-1:
-        validneighbors.append(current[current[0], ouest])
+    # print(type(south))
+    # print("South = "+str(south)+" North = "+str(north)+ "Est = "+str(est)+" Ouest = "+str(ouest))
+    if values[south, right]!=-1: #not aiming on value
+        validneighbors.append([south,right])
+    if values[north, current[1]]!=-1:
+        validneighbors.append([north,right])
+    if values[current[0], est]!=-1:
+        validneighbors.append([left, est])
+    if values[current[0], ouest]!=-1:
+        validneighbors.append([left, ouest])
     return validneighbors
-    
 
-def validate_cell(pos):
-    if pos[0] == -1 or pos[1] == -1:
-        return False
-        return True
-    
-'''
-def neighbors(current):
-    neighbors = [neighbor for neighbor in neighbors if validate_cell(neighbor)]
-    return neighbors
-'''
-
-def a_star_algo(Map_Obj: themap):
+def a_star_algo(themap : Map_Obj):
     goal = themap.get_end_goal_pos()
-    openList = [themap.get_start_pos()]
+    # print(goal)
+    start = themap.get_start_pos()
+    openList = []
+    # openList.append((2, [12,12]))
+    # print(openList)
+    # hq.heapify(openList)
+    # print(openList)
+    # hq.heapify(openList)
+    # print(openList)
+    # print("1")
     closedList = []
+    openList.append((0, start))
     g = 0
-    h = manhattan(themap.get_start_pos(), goal)
-    while not openList.empty() :
-        current = openList[0]
+    h = manhattan(start, goal)
+    print(openList)
+    # print("h="+str(h))
+    while len(openList)>0 :
+        current = openList[0][1:][0] #Priority is unnecessary info for current
+        print("Current : ")
+        print(current)
         if current == goal:
             break
-        closedList.append(openList[0])
+        closedList.append(current)
         openList.pop(0)
-        neighborhood = neighbors(themap.current_pos)
-        print(neighborhood)
-        
-        
-        
-        
+        print("Openlist")
+        print(openList)
+        childs = neighbors(themap)
+        for child in childs:
+            print("child")
+            print(child)
+            if child in closedList:
+                continue;
+            g = manhattan(child, current)
+            h = manhattan(child, goal)
+            f = g+h
+            for link in openList:
+                if child == link and g > manhattan(link, goal):
+                    continue;
+            openList.append(child)
+            hq.heapify(openList)
+            break;
+    print(closedList)
     
+
+themap = Map_Obj(task=1)
+the = themap.get_maps()
+        
+print("1")
+print(manhattan(themap.get_start_pos(), themap.get_end_goal_pos()))
+
+
+print("A* tests")
+a_star_algo(themap)
     
         
 '''

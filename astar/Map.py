@@ -39,7 +39,7 @@ class Map_Obj():
         task : int, optional
             Number of map / task to solve, by default task 1
         """
-        self.start_pos, self.goal_pos, self.end_goal_pos, self.current_pos, \
+        self.start_pos, self.goal_pos, self.current_pos, self.end_goal_pos, \
             self.path_to_map = self.fill_critical_positions(task)
         self.int_map, self.str_map = self.read_map(self.path_to_map)
         self.tmp_cell_value = self.get_cell_value(self.goal_pos)
@@ -101,7 +101,7 @@ class Map_Obj():
             Path to map for current task
         """
         if task == 1:
-            start_pos = [27, 18]
+            start_pos = [45, 18]
             goal_pos = [40, 32]
             current_pos = start_pos
             end_goal_pos = goal_pos
