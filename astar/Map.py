@@ -101,7 +101,7 @@ class Map_Obj():
             Path to map for current task
         """
         if task == 1:
-            start_pos = [45, 18]
+            start_pos = [27, 18]
             goal_pos = [40, 32]
             current_pos = start_pos
             end_goal_pos = goal_pos

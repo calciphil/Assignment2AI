@@ -32,11 +32,11 @@ def manhattan_distance(point1, point2):
         distance += absolute_difference
     return distance
 
-def neighbors(pos : Map_Obj):
+def neighbors(pos : Map_Obj, current : list()) :
     values = pos.get_maps()[0] #aims for values of the map a.k.a. 1, -1 to find walls and paths
     validneighbors = []
-    current = pos.current_pos
-    print(current)
+    # current = pos.current_pos
+    print("Neighbors of : "+str(current))
     left=current[0]
     right=current[1]
     # print("left: "+ str(left))
@@ -59,6 +59,7 @@ def neighbors(pos : Map_Obj):
 
 def a_star_algo(themap : Map_Obj):
     goal = themap.get_end_goal_pos()
+    print("Goal = "+str(goal))
     # print(goal)
     start = themap.get_start_pos()
     openList = []
@@ -73,41 +74,41 @@ def a_star_algo(themap : Map_Obj):
     openList.append((0, start))
     g = 0
     h = manhattan(start, goal)
-    print(openList)
+    print("OpenList @ start = " + str(openList))
+    # openList.append((3, [30,12]))
+    #print(openList)
     # print("h="+str(h))
     while len(openList)>0 :
         current = openList[0][1:][0] #Priority is unnecessary info for current
-        print("Current : ")
-        print(current)
+        print("Current : " + str(current))
         if current == goal:
+            print("You reached your goal")
             break
         closedList.append(current)
         openList.pop(0)
-        print("Openlist")
-        print(openList)
-        childs = neighbors(themap)
+        print("Openlist after pop element 0 = " + str(openList))
+        childs = neighbors(themap, current) #Prints neighbor of + current cell ---> Always on [45,18] how to modify 
         for child in childs:
-            print("child")
-            print(child)
+            print("All childs of current = "+ str(childs))
+            print("child = "+ str(child))
             if child in closedList:
                 continue;
-            g = manhattan(child, current)
+            #g = manhattan(child, current)
             h = manhattan(child, goal)
             f = g+h
             for link in openList:
                 if child == link and g > manhattan(link, goal):
                     continue;
-            openList.append(child)
+            openList.append((h+1, child))
+            print("OpenList with child : " + str(openList))
             hq.heapify(openList)
-            break;
-    print(closedList)
+            print("Closed list running = " +str(closedList) +"\n")
+    print("Closed List @ end = " + str(closedList))
     
 
 themap = Map_Obj(task=1)
 the = themap.get_maps()
         
-print("1")
-print(manhattan(themap.get_start_pos(), themap.get_end_goal_pos()))
 
 
 print("A* tests")
